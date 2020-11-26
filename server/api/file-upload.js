@@ -16,6 +16,7 @@ const uploader = multer({
 const storage = new Storage({
   projectId: process.env.GCLOUD_PROJECT_ID,
   keyFilename: process.env.GCLOUD_APPLICATION_CREDENTIALS,
+  // keyFilename: './api/services/privateKey.json',
 });
 
 // Create a bucket associated to Firebase storage bucket

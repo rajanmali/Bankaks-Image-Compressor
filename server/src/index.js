@@ -3,8 +3,10 @@ const morgan = require('morgan');
 const helmet = require('helmet');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const path = require('path');
+const dotenv = require('dotenv');
 
-require('dotenv').config({ path: `${__dirname}/../.env` });
+dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const port = process.env.PORT || 1337;
 

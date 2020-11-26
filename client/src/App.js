@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axiosConfig from './utis/axiosConfig';
 
+import { isFileImage } from './utis/helperFunctions';
 import Spinner from './components/Spinner';
 import './App.css';
 
@@ -12,7 +13,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [buttonText, setButtonText] = useState('Select your file first');
+  const [buttonText, setButtonText] = useState('Select your image first');
 
   useEffect(() => {
     if (selectedFile) {
@@ -23,7 +24,7 @@ function App() {
   }, [selectedFile]);
 
   const handleFileUpload = (event) => {
-    if (event.target.files[0]) {
+    if (event.target.files[0] && isFileImage(event.target.files[0])) {
       setSelectedFile(event.target.files[0]);
       setFileName(event.target.files[0].name);
       setIsDisabled(false); // Enabling upload button
@@ -35,7 +36,7 @@ function App() {
     event.preventDefault();
     setIsLoading(true);
     setIsDisabled(true);
-    setButtonText("Wait we're uploading your file...");
+    setButtonText("Wait we're uploading your image...");
     try {
       if (selectedFile !== '') {
         // Creating a FormData object
@@ -54,7 +55,6 @@ function App() {
           data: fileData,
           headers: {
             'Content-Type': 'multipart/form-data',
-            'X-API-KEY': process.env.AUTH_TOKEN,
           },
         });
 
@@ -67,7 +67,7 @@ function App() {
           setPreview(null);
           setIsSuccess(false);
           setFileName(null);
-          setButtonText('Select your file first');
+          setButtonText('Select your image first');
         }, 3000);
       }
     } catch (error) {
@@ -76,10 +76,11 @@ function App() {
       setFileName(null);
       setSelectedFile(null);
       setPreview(null);
+      setButtonText('Your image could not be uploaded');
 
       setTimeout(() => {
         setIsError(false);
-        setButtonText('Select your file first');
+        setButtonText('Select your image first');
       }, 3000);
     }
   };
@@ -87,7 +88,23 @@ function App() {
   return (
     <div className="App App-header">
       <header className="title">
-        <h1>Upload a file</h1>
+        <h1>Upload an image</h1>
+        <p>
+          {' '}
+          (Supported image types:{' '}
+          <strong>
+            <em>*.jpg</em>
+          </strong>
+          ,{' '}
+          <strong>
+            <em>*.jpeg</em>
+          </strong>
+          ,{' '}
+          <strong>
+            <em>*.png</em>
+          </strong>
+          )
+        </p>
       </header>
       <main>
         <form onSubmit={(e) => handleSubmit(e)}>
@@ -113,7 +130,11 @@ function App() {
                       ) : (
                         <i className="icon-upload"></i>
                       )}
-                      <input type="file" onChange={handleFileUpload} />
+                      <input
+                        type="file"
+                        onChange={handleFileUpload}
+                        accept="image/*"
+                      />
                     </>
                   )}
                 </>
