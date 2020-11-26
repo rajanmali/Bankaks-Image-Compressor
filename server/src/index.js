@@ -12,8 +12,6 @@ const middlewares = require('./middlewares');
 const router = require('../api/file-upload');
 
 const app = express();
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(morgan('common'));
 app.use(helmet());
@@ -24,9 +22,11 @@ app.use(
   })
 );
 app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.get('/', (req, res) => {
-  res.json({ message: 'File upload API ready for use' });
+  res.json({ message: 'Welcome to this file upload API.' });
 });
 
 app.use('/api/file-upload', router);
@@ -37,5 +37,7 @@ app.use(middlewares.errorHandler);
 
 app.listen(port, () => {
   // eslint-disable-next-line no-console
-  console.log(`Listening at http://localhost:${port}`);
+  console.log(
+    `File upload API ready for use. Listening at http://localhost:${port}`
+  );
 });

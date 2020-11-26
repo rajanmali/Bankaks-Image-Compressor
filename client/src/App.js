@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosConfig from './utis/axiosConfig';
 
 import Spinner from './components/Spinner';
 import './App.css';
@@ -33,25 +33,52 @@ function App() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    //   try {
-    //   if (selectedFile !== '') {
-    //     // Creating a FormData object
-    //     let fileData = new FormData();
-    //     // Setting the 'image' field and the selected file
-    //     fileData.set(
-    //       'image',
-    //       selectedFile,
-    //       `${selectedFile.lastModified}-${selectedFile.name}`
-    //     );
-    //     await axios({
-    //       method: 'post',
-    //       url: process.env.REACT_APP_UPLOAD_API_URL,
-    //       data: fileData,
-    //       headers: { 'Content-Type': 'multipart/form-data' },
-    //     });
-    // } catch (error) {
-    //   setIsError(true);
-    // }
+    setIsLoading(true);
+    setIsDisabled(true);
+    setButtonText("Wait we're uploading your file...");
+    try {
+      if (selectedFile !== '') {
+        // Creating a FormData object
+        let fileData = new FormData();
+
+        // Adding the 'image' field and the selected file as value to our FormData object
+        // Changing file name to make it unique and avoid potential later overrides
+        fileData.set(
+          'image',
+          selectedFile,
+          `${Date.now()}-${selectedFile.name}`
+        );
+        await axiosConfig({
+          method: 'post',
+          url: '/api/file-upload',
+          data: fileData,
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+
+        setIsLoading(false);
+        setIsSuccess(true);
+
+        // Reset to default values after 3 seconds
+        setTimeout(() => {
+          setSelectedFile(null);
+          setPreview(null);
+          setIsSuccess(false);
+          setFileName(null);
+          setButtonText('Select your file first');
+        }, 3000);
+      }
+    } catch (error) {
+      setIsLoading(false);
+      setIsError(true);
+      setFileName(null);
+      setSelectedFile(null);
+      setPreview(null);
+
+      setTimeout(() => {
+        setIsError(false);
+        setButtonText('Select your file first');
+      }, 3000);
+    }
   };
 
   return (
@@ -60,7 +87,7 @@ function App() {
         <h1>Upload a file</h1>
       </header>
       <main>
-        <form onSubmit={(e) => handleFileUpload(e)}>
+        <form onSubmit={(e) => handleSubmit(e)}>
           <label className="uploader">
             <div className="upload-space">
               {isLoading ? (
