@@ -52,7 +52,10 @@ function App() {
           method: 'post',
           url: '/api/file-upload',
           data: fileData,
-          headers: { 'Content-Type': 'multipart/form-data' },
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'X-API-KEY': process.env.AUTH_TOKEN,
+          },
         });
 
         setIsLoading(false);
