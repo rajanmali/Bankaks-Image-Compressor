@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
-import axiosConfig from './utis/axiosConfig';
+import axiosConfig from './utils/axiosConfig';
 
-import { isFileImage } from './utis/helperFunctions';
-import Spinner from './components/Spinner';
+import { isFileImage, findReducedResolutions } from './utils/helperFunctions';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import ImageForm from './components/ImageForm';
 import './App.css';
 
 function App() {
@@ -15,13 +17,23 @@ function App() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [buttonText, setButtonText] = useState('Select your image first');
 
+  const [reducedImageSizeArray, setReducedImagSizeArray] = useState([]);
+
   useEffect(() => {
     if (selectedFile) {
+      findReducedResolutions(selectedFile, 10, 20).then((res) => {
+        console.log(res);
+        setReducedImagSizeArray([...res]);
+      });
       const reader = new FileReader();
       reader.onloadend = () => setPreview(reader.result);
       reader.readAsDataURL(selectedFile);
     }
   }, [selectedFile]);
+
+  useEffect(() => {
+    console.log(reducedImageSizeArray);
+  }, [reducedImageSizeArray]);
 
   const handleFileUpload = (event) => {
     if (event.target.files[0] && isFileImage(event.target.files[0])) {
@@ -87,80 +99,19 @@ function App() {
 
   return (
     <div className="App App-header">
-      <header className="title">
-        <h1>Upload an image</h1>
-        <p>
-          {' '}
-          (Supported image types:{' '}
-          <strong>
-            <em>*.jpg</em>
-          </strong>
-          ,{' '}
-          <strong>
-            <em>*.jpeg</em>
-          </strong>
-          ,{' '}
-          <strong>
-            <em>*.png</em>
-          </strong>
-          )
-        </p>
-      </header>
-      <main>
-        <form onSubmit={(e) => handleSubmit(e)}>
-          <label className="uploader">
-            <div className="upload-space">
-              {isLoading ? (
-                <Spinner />
-              ) : (
-                <>
-                  {isError || isSuccess ? (
-                    <i
-                      className={`icon-${isSuccess ? 'success' : 'error'}`}
-                    ></i>
-                  ) : (
-                    <>
-                      {preview ? (
-                        <div className="preview">
-                          <img
-                            src={preview}
-                            alt="Preview of the file to be uploaded"
-                          />
-                        </div>
-                      ) : (
-                        <i className="icon-upload"></i>
-                      )}
-                      <input
-                        type="file"
-                        onChange={handleFileUpload}
-                        accept="image/*"
-                      />
-                    </>
-                  )}
-                </>
-              )}
-            </div>
-            {isError || isSuccess ? (
-              <p className={isSuccess ? 'success' : 'error'}>
-                {isSuccess ? 'Upload successful!' : 'Something went wrong ...'}
-              </p>
-            ) : (
-              <p className="filename">
-                {fileName ? fileName : 'No file selected yet'}
-              </p>
-            )}
-          </label>
-
-          <button
-            type="submit"
-            className="btn"
-            disabled={isDisabled}
-            tabIndex={0}
-          >
-            {buttonText}
-          </button>
-        </form>
-      </main>
+      <Header />
+      <ImageForm
+        isLoading={isLoading}
+        isError={isError}
+        isSuccess={isSuccess}
+        preview={preview}
+        fileName={fileName}
+        isDisabled={isDisabled}
+        buttonText={buttonText}
+        handleFileUpload={handleFileUpload}
+        handleSubmit={handleSubmit}
+      />
+      <Footer />
     </div>
   );
 }
