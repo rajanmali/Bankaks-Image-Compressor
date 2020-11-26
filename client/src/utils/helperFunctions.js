@@ -52,7 +52,7 @@ export const findReducedResolutions = function (file) {
 };
 
 export const getBlobUrl = (event) => {
-  let blob = new Blob([event.target.result]); // create blob...
+  let blob = new Blob([event.target.result]); // Create blob from reader
   window.URL = window.URL || window.webkitURL;
   return window.URL.createObjectURL(blob); // and get it's URL
 };

@@ -38,7 +38,6 @@ function App() {
   useEffect(() => {
     //Check if file is selected and call function to find reduced resolution
     if (selectedFile) {
-      console.log(selectedFile);
       findReducedResolutions(selectedFile, 10, 20).then((res) => {
         setReducedImgResolutions([...res]);
       });
