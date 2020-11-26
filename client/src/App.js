@@ -1,7 +1,13 @@
 import { useState, useEffect } from 'react';
 import axiosConfig from './utils/axiosConfig';
 
-import { isFileImage, findReducedResolutions } from './utils/helperFunctions';
+import {
+  isFileImage,
+  findReducedResolutions,
+  getBlobUrl,
+  // resizeImageWithResolution,
+  checkBrowserFileApiCompatibility,
+} from './utils/helperFunctions';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ImageForm from './components/ImageForm';
@@ -17,13 +23,24 @@ function App() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [buttonText, setButtonText] = useState('Select your image first');
 
-  const [reducedImageSizeArray, setReducedImagSizeArray] = useState([]);
+  const [reducedImgResolutions, setReducedImgResolutions] = useState([]);
+  // const [reducedImages, setReducedImage] = useState([]);
+
+  const imageWrapper = document.getElementById('image-wrapper');
+  const existingImages = document.getElementsByName('images[resized]');
 
   useEffect(() => {
+    //Check for browser compatibility with File API
+    setIsDisabled(checkBrowserFileApiCompatibility());
+    removeExistingImages();
+  }, []);
+
+  useEffect(() => {
+    //Check if file is selected and call function to find reduced resolution
     if (selectedFile) {
+      console.log(selectedFile);
       findReducedResolutions(selectedFile, 10, 20).then((res) => {
-        console.log(res);
-        setReducedImagSizeArray([...res]);
+        setReducedImgResolutions([...res]);
       });
       const reader = new FileReader();
       reader.onloadend = () => setPreview(reader.result);
@@ -32,10 +49,44 @@ function App() {
   }, [selectedFile]);
 
   useEffect(() => {
-    console.log(reducedImageSizeArray);
-  }, [reducedImageSizeArray]);
+    reducedImgResolutions.forEach((resolution, index) => {
+      const width = resolution[`imgSizeW-${index}`];
+      const height = resolution[`imgSizeH-${index}`];
+
+      let reader = new FileReader();
+      reader.readAsArrayBuffer(selectedFile);
+
+      reader.onload = function (event) {
+        const blobURL = getBlobUrl(event);
+        const image = new Image();
+        image.src = blobURL;
+        image.width = width;
+        image.height = height;
+        image.name = 'images[resized]';
+
+        // const resizedImage = resizeImageWithResolution(
+        //   image,
+        //   blobURL,
+        //   imageWrapper,
+        //   width,
+        //   height
+        // );
+
+        imageWrapper.appendChild(image);
+      };
+    });
+  }, [reducedImgResolutions]);
+
+  const removeExistingImages = () => {
+    while (existingImages.length > 0) {
+      /*  It's a live list so removing the first element each time
+      until eventually all the elements in the parent element get removed */
+      imageWrapper.removeChild(existingImages[0]);
+    }
+  };
 
   const handleFileUpload = (event) => {
+    removeExistingImages();
     if (event.target.files[0] && isFileImage(event.target.files[0])) {
       setSelectedFile(event.target.files[0]);
       setFileName(event.target.files[0].name);
@@ -61,6 +112,7 @@ function App() {
           selectedFile,
           `${Date.now()}-${selectedFile.name}`
         );
+
         await axiosConfig({
           method: 'post',
           url: '/api/file-upload',
@@ -100,6 +152,7 @@ function App() {
   return (
     <div className="App App-header">
       <Header />
+      <div id="image-wrapper"></div>
       <ImageForm
         isLoading={isLoading}
         isError={isError}

@@ -1,3 +1,14 @@
+/* RESETS & GLOBALS */
+body {
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+* {
+  font-family: 'Lato', 'Segoe UI', 'Roboto', 'Oxygen', 'Helvetica Neue', serif;
+}
+
 /* Components Styles */
 @import './App.scss';
 @import './Button.scss';
@@ -48,13 +59,13 @@
   content: '\e901';
 }
 
-/* RESETS & GLOBALS */
-body {
-  margin: 0;
-  padding: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-* {
-  font-family: 'Lato', 'Segoe UI', 'Roboto', 'Oxygen', 'Helvetica Neue', serif;
+#image-wrapper {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    margin: 1em;
+  }
 }

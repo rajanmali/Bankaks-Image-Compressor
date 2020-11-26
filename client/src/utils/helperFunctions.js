@@ -1,7 +1,18 @@
+export const checkBrowserFileApiCompatibility = () => {
+  if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
+    alert('The File APIs are not fully supported in this browser.');
+    return true;
+  }
+};
+
 /*  Function to check whether uploaded file is image or not  */
 export const isFileImage = (file) => {
   const acceptedImageTypes = ['image/jpg', 'image/jpeg', 'image/png'];
-  return file && acceptedImageTypes.includes(file['type']);
+  return (
+    file &&
+    acceptedImageTypes.includes(file['type']) &&
+    /image/i.test(file.type)
+  );
 };
 
 /*  Function to find the resolution of current image and find the required resolution aka divided by 10 and 20  */
@@ -38,4 +49,29 @@ export const findReducedResolutions = function (file) {
 
     img.src = objectUrl;
   });
+};
+
+export const getBlobUrl = (event) => {
+  let blob = new Blob([event.target.result]); // create blob...
+  window.URL = window.URL || window.webkitURL;
+  return window.URL.createObjectURL(blob); // and get it's URL
+};
+
+export const resizeImageWithResolution = (
+  image,
+  canvasWrapper,
+  width,
+  height
+) => {
+  const canvas = document.createElement('canvas');
+
+  canvas.width = width;
+  canvas.height = height;
+
+  let ctx = canvas.getContext('2d');
+  ctx.drawImage(image, 0, 0, width, height);
+
+  canvasWrapper.appendChild(canvas); // do the actual resized preview
+
+  return canvas.toDataURL('image/jpeg', 0.7); // get the data from canvas as 70% JPG (can be also PNG, etc.)
 };
