@@ -22,7 +22,7 @@ export const dataURLtoFile = (dataurl, filename) => {
 /*  Function that creates new dataURL from input dataURL, width and height  */
 export const resizeBase64Img = (dataURL, width, height) => {
   return new Promise((resolve, reject) => {
-    //Create new canvas object and image object with new width and height
+    //Create new canvas object and image object with dataURL, new width and height
     var canvas = document.createElement('canvas');
     canvas.style.width = width.toString() + 'px';
     canvas.style.height = height.toString() + 'px';

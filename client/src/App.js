@@ -56,15 +56,17 @@ function App() {
   useEffect(() => {
     //Create new image objects for the uploaded image with reduced resolutions
     reducedImgResolutions.forEach((resolution, index) => {
+      //Set new width and height to be used
       const width = resolution[`imgSizeW-${index}`];
       const height = resolution[`imgSizeH-${index}`];
 
-      let blobReader = new FileReader();
+      //Create new FileReader object to extract dataURL and create reduced resolution File Objects
       let dataReader = new FileReader();
-      blobReader.readAsArrayBuffer(selectedFile);
       dataReader.readAsDataURL(selectedFile);
 
+      //Wait for FileReader object to get loaded
       dataReader.onloadend = () => {
+        //Extract dataURl from FileReader object
         const dataURL = dataReader.result;
 
         //Create preview image and append it to the image wrapper div
@@ -89,9 +91,9 @@ function App() {
   }, [reducedImgResolutions]);
 
   const removeExistingPreviewImages = () => {
-    while (existingImages.length > 0) {
-      /*  It's a live list so removing the first element each time
+    /*  It's a live list so removing the first element each time
       until eventually all the elements in the parent element get removed */
+    while (existingImages.length > 0) {
       imageWrapper.removeChild(existingImages[0]);
     }
   };
@@ -149,15 +151,6 @@ function App() {
             newPreviewList.push(fileLocation);
             setPreviewList([...newPreviewList]);
           });
-
-          // await axiosConfig({
-          //   method: 'post',
-          //   url: '/api/file-upload',
-          //   data: fileData,
-          //   headers: {
-          //     'Content-Type': 'multipart/form-data',
-          //   },
-          // });
         });
 
         // Reset to default values after 3 seconds
@@ -191,19 +184,18 @@ function App() {
     <div className="App App-header">
       <Header />
       <div id="image-wrapper"></div>
-      {previewList.length > 0 &&
-        previewList.map((previewLink) => (
-          <button>
-            <a
-              key={JSON.stringify(previewLink)}
-              href={previewLink}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Preview Image
-            </a>
-          </button>
-        ))}
+      {previewList.length > 0 && (
+        <ul className="preview-list">
+          <h5>Check your uploaded images:</h5>
+          {previewList.map((previewLink, index) => (
+            <li key={JSON.stringify(previewLink)}>
+              <a href={previewLink} target="_blank" rel="noreferrer">
+                {`Preview Image #${index + 1}`}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
       <ImageForm
         isLoading={isLoading}
         isError={isError}

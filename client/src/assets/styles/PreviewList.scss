@@ -1,0 +1,28 @@
+.preview-list {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: space-around;
+
+  h5 {
+    margin-right: 1em;
+  }
+
+  li {
+    list-style: none;
+    margin-right: 1em;
+
+    a {
+      text-decoration: none;
+      color: white;
+      transition: all 0.3s ease;
+      padding: 0.5em;
+      border: 1px solid #443a9e;
+      border-radius: 4px;
+      &:hover {
+        border: 1px dashed white;
+        background-color: #443a9e;
+      }
+    }
+  }
+}
