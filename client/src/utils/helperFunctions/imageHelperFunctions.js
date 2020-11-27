@@ -1,10 +1,3 @@
-export const checkBrowserFileApiCompatibility = () => {
-  if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
-    alert('The File APIs are not fully supported in this browser.');
-    return true;
-  }
-};
-
 /*  Function to check whether uploaded file is image or not  */
 export const isFileImage = (file) => {
   const acceptedImageTypes = ['image/jpg', 'image/jpeg', 'image/png'];
@@ -14,6 +7,20 @@ export const isFileImage = (file) => {
     /image/i.test(file.type)
   );
 };
+
+/*  Funciton to create and return resized images object to be displayed as previews for user  */
+export const createNewPreviewImage = (dataURL, width, height) => {
+  const image = new Image();
+  image.src = dataURL;
+  image.width = width;
+  image.height = height;
+  image.name = 'images[resized]';
+  return image;
+};
+
+/* Function to update image name and append new width and height at the end of the name */
+export const updateImageName = (name, width, height) =>
+  `${name.substr(0, name.lastIndexOf('.'))}-${width}-${height}.jpg`;
 
 /*  Function to find the resolution of current image and find the required resolution aka divided by 10 and 20  */
 export const findReducedResolutions = function (file) {
@@ -49,29 +56,4 @@ export const findReducedResolutions = function (file) {
 
     img.src = objectUrl;
   });
-};
-
-export const getBlobUrl = (event) => {
-  let blob = new Blob([event.target.result]); // Create blob from reader
-  window.URL = window.URL || window.webkitURL;
-  return window.URL.createObjectURL(blob); // and get it's URL
-};
-
-export const resizeImageWithResolution = (
-  image,
-  canvasWrapper,
-  width,
-  height
-) => {
-  const canvas = document.createElement('canvas');
-
-  canvas.width = width;
-  canvas.height = height;
-
-  let ctx = canvas.getContext('2d');
-  ctx.drawImage(image, 0, 0, width, height);
-
-  canvasWrapper.appendChild(canvas); // do the actual resized preview
-
-  return canvas.toDataURL('image/jpeg', 0.7); // get the data from canvas as 70% JPG (can be also PNG, etc.)
 };

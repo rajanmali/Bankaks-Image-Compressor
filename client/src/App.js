@@ -1,17 +1,22 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 import axiosConfig from './utils/axiosConfig';
 
 import {
   isFileImage,
+  updateImageName,
+  createNewPreviewImage,
   findReducedResolutions,
-  getBlobUrl,
-  // resizeImageWithResolution,
+} from './utils/helperFunctions/imageHelperFunctions';
+import {
+  dataURLtoFile,
+  resizeBase64Img,
   checkBrowserFileApiCompatibility,
-} from './utils/helperFunctions';
+} from './utils/helperFunctions/fileHelperFunctions';
+
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ImageForm from './components/ImageForm';
-import './App.css';
 
 function App() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -24,7 +29,8 @@ function App() {
   const [buttonText, setButtonText] = useState('Select your image first');
 
   const [reducedImgResolutions, setReducedImgResolutions] = useState([]);
-  // const [reducedImages, setReducedImage] = useState([]);
+  const [reducedImageFiles, setReducedImageFiles] = useState([]);
+  const [previewList, setPreviewList] = useState([]);
 
   const imageWrapper = document.getElementById('image-wrapper');
   const existingImages = document.getElementsByName('images[resized]');
@@ -32,7 +38,7 @@ function App() {
   useEffect(() => {
     //Check for browser compatibility with File API
     setIsDisabled(checkBrowserFileApiCompatibility());
-    removeExistingImages();
+    removeExistingPreviewImages();
   }, []);
 
   useEffect(() => {
@@ -48,35 +54,41 @@ function App() {
   }, [selectedFile]);
 
   useEffect(() => {
+    //Create new image objects for the uploaded image with reduced resolutions
     reducedImgResolutions.forEach((resolution, index) => {
       const width = resolution[`imgSizeW-${index}`];
       const height = resolution[`imgSizeH-${index}`];
 
-      let reader = new FileReader();
-      reader.readAsArrayBuffer(selectedFile);
+      let blobReader = new FileReader();
+      let dataReader = new FileReader();
+      blobReader.readAsArrayBuffer(selectedFile);
+      dataReader.readAsDataURL(selectedFile);
 
-      reader.onload = function (event) {
-        const blobURL = getBlobUrl(event);
-        const image = new Image();
-        image.src = blobURL;
-        image.width = width;
-        image.height = height;
-        image.name = 'images[resized]';
+      dataReader.onloadend = () => {
+        const dataURL = dataReader.result;
 
-        // const resizedImage = resizeImageWithResolution(
-        //   image,
-        //   blobURL,
-        //   imageWrapper,
-        //   width,
-        //   height
-        // );
+        //Create preview image and append it to the image wrapper div
+        const previewImage = createNewPreviewImage(dataURL, width, height);
+        imageWrapper.appendChild(previewImage);
 
-        imageWrapper.appendChild(image);
+        //Create new dataURL with reduced image resolution
+        resizeBase64Img(dataURL, width, height).then((reducedDataURL) => {
+          //Set new file name for each reduced image
+          const newFileName = updateImageName(fileName, width, height);
+
+          //Convert dataReader result into File object
+          const reducedImageFile = dataURLtoFile(reducedDataURL, newFileName);
+
+          //Push new File object to image file array
+          const newReducedImageFiles = reducedImageFiles;
+          newReducedImageFiles.push(reducedImageFile);
+          setReducedImageFiles([...newReducedImageFiles]);
+        });
       };
     });
   }, [reducedImgResolutions]);
 
-  const removeExistingImages = () => {
+  const removeExistingPreviewImages = () => {
     while (existingImages.length > 0) {
       /*  It's a live list so removing the first element each time
       until eventually all the elements in the parent element get removed */
@@ -85,8 +97,18 @@ function App() {
   };
 
   const handleFileUpload = (event) => {
-    removeExistingImages();
+    //Remove existing preview images for each new image selection
+    removeExistingPreviewImages();
     if (event.target.files[0] && isFileImage(event.target.files[0])) {
+      //Push uploaded image to reduced image files array
+      const tempReducedImageFiles = reducedImageFiles;
+      tempReducedImageFiles.push(event.target.files[0]);
+      setReducedImageFiles([...tempReducedImageFiles]);
+
+      //Reset preview list
+      setPreviewList([]);
+
+      //Update states for application UI
       setSelectedFile(event.target.files[0]);
       setFileName(event.target.files[0].name);
       setIsDisabled(false); // Enabling upload button
@@ -96,36 +118,51 @@ function App() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    //Update states for application UI
     setIsLoading(true);
     setIsDisabled(true);
     setButtonText("Wait we're uploading your image...");
     try {
-      if (selectedFile !== '') {
-        // Creating a FormData object
-        let fileData = new FormData();
-
-        // Adding the 'image' field and the selected file as value to our FormData object
-        // Changing file name to make it unique and avoid potential later overrides
-        fileData.set(
-          'image',
-          selectedFile,
-          `${Date.now()}-${selectedFile.name}`
-        );
-
-        await axiosConfig({
-          method: 'post',
-          url: '/api/file-upload',
-          data: fileData,
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-
+      //Check for reduced image files
+      if (selectedFile !== '' && reducedImageFiles.length === 3) {
         setIsLoading(false);
         setIsSuccess(true);
 
+        reducedImageFiles.forEach((imageFile) => {
+          // Creating a FormData object
+          let fileData = new FormData();
+
+          // Adding the 'image' field and the selected file as value to our FormData object
+          // Changing file name to make it unique and avoid potential later overrides
+          fileData.set('image', imageFile, `${Date.now()}__${imageFile.name}`);
+
+          axiosConfig({
+            method: 'post',
+            url: '/api/file-upload',
+            data: fileData,
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }).then(({ data: { fileLocation } }) => {
+            const newPreviewList = previewList;
+            newPreviewList.push(fileLocation);
+            setPreviewList([...newPreviewList]);
+          });
+
+          // await axiosConfig({
+          //   method: 'post',
+          //   url: '/api/file-upload',
+          //   data: fileData,
+          //   headers: {
+          //     'Content-Type': 'multipart/form-data',
+          //   },
+          // });
+        });
+
         // Reset to default values after 3 seconds
         setTimeout(() => {
+          removeExistingPreviewImages();
           setSelectedFile(null);
           setPreview(null);
           setIsSuccess(false);
@@ -134,6 +171,7 @@ function App() {
         }, 3000);
       }
     } catch (error) {
+      //Update states for application UI
       setIsLoading(false);
       setIsError(true);
       setFileName(null);
@@ -141,6 +179,7 @@ function App() {
       setPreview(null);
       setButtonText('Your image could not be uploaded');
 
+      // Reset to default values after 3 seconds
       setTimeout(() => {
         setIsError(false);
         setButtonText('Select your image first');
@@ -152,6 +191,19 @@ function App() {
     <div className="App App-header">
       <Header />
       <div id="image-wrapper"></div>
+      {previewList.length > 0 &&
+        previewList.map((previewLink) => (
+          <button>
+            <a
+              key={JSON.stringify(previewLink)}
+              href={previewLink}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Preview Image
+            </a>
+          </button>
+        ))}
       <ImageForm
         isLoading={isLoading}
         isError={isError}
