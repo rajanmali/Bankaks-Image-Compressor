@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "name": "bankaks-image-compressor-api",
+  "builds": [
+    {
+      "src": "src/index.js",
+      "use": "@now/node-server"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/.*",
+      "dest": "src/index.js"
+    }
+  ],
+  "alias": [
+    "bankaks-image-compressor-api"
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "PORT": "1337",
+    "CORS_ORIGIN": "https://bankaks-image-compressor.vercel.app/",
+    "GCLOUD_PROJECT_ID": "bankaks-image-compressor-7a4b1",
+    "GCLOUD_APPLICATION_CREDENTIALS": "./api/services/privateKey.json",
+    "GCLOUD_STORAGE_BUCKET_URL": "gs://bankaks-image-compressor-7a4b1.appspot.com"
+  }
+}

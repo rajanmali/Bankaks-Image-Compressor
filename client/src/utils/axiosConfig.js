@@ -6,7 +6,7 @@ const instance = axios.create({
   baseURL:
     window.location.hostname === 'localhost'
       ? 'http://localhost:1337'
-      : 'https://bankaks-image-compressor.rajanmali.vercel.app',
+      : 'https://bankaks-image-compressor-api.vercel.app',
 });
 
 // Where you would set stuff like your 'Authorization' header, etc ...
