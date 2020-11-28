@@ -32,16 +32,18 @@ Bakaks Image Compressor uses a number of open source projects to work properly:
 - [Morgan] - Monitor API calls on the backend for debugging and testing
 - [Helmet] - Middleware to add response and request header to our requests
 - [Multer] - Middleware for handling multi part form data
+- [Vercel] - Deployment host use for front-end
 
 ### Limitations
 
 - Only these image extensions are supported currently: _.jpg, _.jpeg, \*.png
+- Due to a technical issue, backend could not be deployed but i have deployed the front end at [Bankaks Frontend]
 
 ### License
 
 MIT
 
-[//]: # "These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax"
+[//]: # 'These are reference links used in the body of this note and get stripped out when the markdown processor does its job.'
 [vs code]: https://code.visualstudio.com/
 [reactjs]: https://reactjs.org/
 [axios]: https://github.com/axios/axios
@@ -54,3 +56,5 @@ MIT
 [morgan]: https://www.npmjs.com/package/morgan
 [helmet]: https://www.npmjs.com/package/helmet
 [multer]: https://www.npmjs.com/package/multer
+[vercel]: https://vercel.com/
+[bankaks frontend]: https://bankaks-image-compressor.vercel.app/

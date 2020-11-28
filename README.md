@@ -8,11 +8,13 @@ I have created a full stack application that handles both the front-end using Re
 
 When the user uploads these images, a request is sent to the backend which uploads these three images to the Google firebase cloud storage. Once the images have been uploaded, the user is presented with preview links to view the uploaded images.
 
-- ### For the Solution statement, please check [Solution Statement].
-- ### For the Technical Specifications, please check [Technical Specification].
-- ### For the Installation Instructions, please check [Installation Instruction].
+- ### For demo video: [Demonstration Video]
+- ### For the Solution statement: [Solution Statement].
+- ### For the Technical Specifications: [Technical Specification].
+- ### For the Installation Instructions: [Installation Instruction].
 
 [//]: # "These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax"
 [solution statement]: https://github.com/rajanmali/Bankaks-Image-Compressor/blob/master/Solution%20Statement.md
 [technical specification]: https://github.com/rajanmali/Bankaks-Image-Compressor/blob/master/Technical%20Specification.md
 [installation instruction]: https://github.com/rajanmali/Bankaks-Image-Compressor/blob/master/Installation%20Instruction.md
+[demonstration video]: https://www.youtube.com/watch?v=_SVjy16xfeM
