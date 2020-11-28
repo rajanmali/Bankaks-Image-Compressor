@@ -39,7 +39,7 @@ app.use(middlewares.errorHandler);
 
 app.listen(port, () => {
   // eslint-disable-next-line no-console
-  console.log(
-    `File upload API ready for use. Listening at http://localhost:${port}`
-  );
+  // console.log(
+  //   `File upload API ready for use. Listening at http://localhost:${port}`
+  // );
 });

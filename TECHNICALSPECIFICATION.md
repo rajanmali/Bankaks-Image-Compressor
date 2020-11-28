@@ -30,32 +30,11 @@ Bakaks Image Compressor uses a number of open source projects to work properly:
 - [Helmet] - Middleware to add response and request header to our requests
 - [Multer] - Middleware for handling multi part form data
 
-And of course Dillinger itself is open source with a [public repository][dill]
-on GitHub.
+### Limitations
 
-### Installation
+- Backend is configured to handle single image request at a time
 
-Bankaks Image Compressor requires [Node.js](https://nodejs.org/) v4+ to run.
-
-For the back-end, install the dependencies and devDependencies and start the server.
-
-```sh
-$ cd Bankaks-Image-Compressor
-$ npm install
-$ cd server
-$ npm run dev
-```
-
-For the front-end,
-
-```sh
-$ cd Bankaks-Image-Compressor
-$ npm install
-$ cd client
-$ npm start
-```
-
-## License
+### License
 
 MIT
 
@@ -71,4 +50,4 @@ MIT
 [cors]: https://www.npmjs.com/package/cors
 [morgan]: https://www.npmjs.com/package/morgan
 [helmet]: https://www.npmjs.com/package/helmet
-[multer]: https://www.npmjs.com/package/multer>
+[multer]: https://www.npmjs.com/package/multer
