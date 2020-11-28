@@ -3,8 +3,11 @@
 ### Front Matter
 
 Title: Bankaks Image Compressor
+
 Author: Rajan Mali
+
 Created on: 27th November, 2020
+
 Last updated: 27th November, 2020
 
 ### Introduction
