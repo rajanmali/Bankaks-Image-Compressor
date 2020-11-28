@@ -15,6 +15,7 @@ const router = require('../api/file-upload');
 
 const app = express();
 
+// Attaching middleware dependencies
 app.use(morgan('common'));
 app.use(helmet());
 app.use(
@@ -27,12 +28,15 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+// Basic api route to check if server is configured correctly
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to this file upload API.' });
 });
 
+// Attach api routes
 app.use('/api/file-upload', router);
 
+// Attach error handling middlewares
 app.use(middlewares.notFound);
 
 app.use(middlewares.errorHandler);
