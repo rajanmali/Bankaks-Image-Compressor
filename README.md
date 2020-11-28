@@ -13,6 +13,8 @@ When the user uploads these images, a request is sent to the backend which uploa
 - ### For the Technical Specifications: [Technical Specification].
 - ### For the Installation Instructions: [Installation Instruction].
 
+Last updated: 28th November, 2020
+
 [//]: # "These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax"
 [solution statement]: https://github.com/rajanmali/Bankaks-Image-Compressor/blob/master/Solution%20Statement.md
 [technical specification]: https://github.com/rajanmali/Bankaks-Image-Compressor/blob/master/Technical%20Specification.md
