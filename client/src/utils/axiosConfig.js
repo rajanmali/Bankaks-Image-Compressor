@@ -2,7 +2,7 @@
 import axios from 'axios';
 // Next we make an 'instance' of it
 const instance = axios.create({
-  // .. where we make our configurations
+  // where we make our configurations
   baseURL:
     window.location.hostname === 'localhost'
       ? 'http://localhost:1337'
