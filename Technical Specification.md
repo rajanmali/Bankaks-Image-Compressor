@@ -8,7 +8,7 @@ Author: Rajan Mali
 
 Created on: 27th November, 2020
 
-Last updated: 27th November, 2020
+Last updated: 28th November, 2020
 
 ### Introduction
 
@@ -35,7 +35,7 @@ Bakaks Image Compressor uses a number of open source projects to work properly:
 
 ### Limitations
 
-- Backend is configured to handle single image request at a time
+- Only these image extensions are supported currently: _.jpg, _.jpeg, \*.png
 
 ### License
 

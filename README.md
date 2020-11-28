@@ -6,7 +6,7 @@ I have created a full stack application that handles both the front-end using Re
 - One with `n/10 x m/10 px`
 - One with `n/20 x m/20 px`
 
-When the user uploads these images, a request is sent to the backend which uploads these three images to the Google firebase cloud storage.
+When the user uploads these images, a request is sent to the backend which uploads these three images to the Google firebase cloud storage. Once the images have been uploaded, the user is presented with preview links to view the uploaded images.
 
 - ### For the Solution statement, please check [Solution Statement].
 - ### For the Technical Specifications, please check [Technical Specification].
